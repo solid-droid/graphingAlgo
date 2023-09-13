@@ -302,98 +302,20 @@ let rawEdges = [
 ]
 
 
-rawNodes = [
-    {
-        id: 'n1',
-        children: [
-            {
-                id: 'n11',  
-                children:[
-                   {
-                    id: 'n111', 
-                   } ,
-                   {
-                    id: 'n112'
-                   },
-                   {
-                    id: 'n113'
-                   },
-                   {
-                    id: 'n114'
-                   },
-                   {
-                    id: 'n115'
-                   },
-                ]
-            },
-            {
-                id: 'n12',  
-                children:[
-                   {
-                    id: 'n121', 
-                   } ,
-                   {
-                    id: 'n122'
-                   },
-                ]
-            }
-        ]
-    },
-    {
-        id: 'n2',
-        children: [
-            {
-                id: 'n21',  
-                children:[
-                   {
-                    id: 'n211', 
-                   } ,
-                   {
-                    id: 'n212'
-                   },
-                ]
-            },
-            {
-                id: 'n22',  
-                children:[
-                   {
-                    id: 'n221', 
-                   } ,
-                   {
-                    id: 'n222'
-                   },
-                ]
-            },
-        ]
-    },
-    {
-        id: 'n3',
-        children: [
-            {
-                id: 'n31',  
-                children:[
-                   {
-                    id: 'n311', 
-                   } ,
-                   {
-                    id: 'n312'
-                   },
-                   {
-                    id: 'n313'
-                   },
-                ]
-            },
-            {
-                id: 'n32',  
-                children:[
-                   {
-                    id: 'n321', 
-                   } ,
-                   {
-                    id: 'n322'
-                   },
-                ]
-            },
-        ]
-    }
+let edges = [
+    { from: 'n1', to: 'n2'},
+    { from: 'n2', to: 'n4'},
+    { from: 'n3', to: 'n4'},
+    { from: 'n5', to: 'n4'},
+    { from: 'n6', to: 'n4'},
+];
+
+
+let nodes = [
+{id: 'n1', label: 'n1' , width: 100, height: 100},
+{id: 'n2', label: 'n2', width: 100, height: 100},
+{id: 'n3', label: 'n3', width: 100, height: 100},
+{id: 'n4', label: 'n4', width: 100, height: 100},
+{id: 'n5', label: 'n5', width: 100, height: 100},
+{id: 'n6', label: 'n6', width: 100, height: 100},
 ]

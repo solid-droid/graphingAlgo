@@ -1,23 +1,3 @@
-let edges = [
-    { from: 'n1', to: 'n3'},
-    { from: 'n1', to: 'n5'},
-    { from: 'n2', to: 'n3'},
-    { from: 'n3', to: 'n2'},
-    { from: 'n3', to: 'n4'},
-    { from: 'n4', to: 'n5'},
-    { from: 'n5', to: 'n6'},
-];
-
-
-let nodes = [
-    {id: 'n1', label: 'n1'},
-    {id: 'n2', label: 'n2'},
-    {id: 'n3', label: 'n3'},
-    {id: 'n4', label: 'n4'},
-    {id: 'n5', label: 'n5'},
-    {id: 'n6', label: 'n6'},
-]
-
 function getTenantEdgeCounts(edges){
     let tenantEdgeCount = {};
     let tenantEdgeList = [];
@@ -81,15 +61,25 @@ function generateGraph(node, graph, coordsReserve, nodeMap){
                 x = graph[id].x + x;
                 /////////-- if same line check--///
                 const ySet = new Set();
+                const xSet = new Set();
                 const connections = nodeMap[nd].nodes.length;
                 if(connections > 1){
                     nodeMap[nd].nodes.forEach(_node => {
                         if(graph[_node]){
                             ySet.add(graph[_node].y);
+                            xSet.add(graph[_node].x);
                         }
                     });
                     const sameY = ySet.size !== connections && ySet.has(y);
-                    if(sameY){
+                    let pos = false, neg = false;
+                    [...xSet].forEach(_x => {
+                        if(!pos)
+                            pos = _x > x;
+
+                        if(!neg)
+                            neg = _x < x;
+                    });
+                    if(sameY && (pos && neg)){
                         y -= 1;
                     }
                 }
