@@ -48,16 +48,16 @@ function generateGraph(node, graph, coordsReserve, nodeMap){
     }
 
     let sortedNodes = node.nodes.sort((a,b) => nodeMap[a].nodes.length - nodeMap[b].nodes.length);
-    sortedNodes = node.nodes.sort((a,b) => graph[a] ? 1 : -1);
+    sortedNodes = sortedNodes.sort((a,b) => graph[a] ? 1 : -1);
     sortedNodes.forEach((nd,i) => {
         if(!graph[nd]){
             //if new connection add the node in available coords.
             graph[nd] = {};
-            for(let d =0; d< coords.length; ++d){
-                let x = coords[d][0];
-                let y = coords[d][1];
-                let yOffset_pos = coords[d][1] + 1
-                let yOffset_neg = coords[d][1] - 1
+            for(let d of coords){
+                let x = d[0];
+                let y = d[1];
+                let yOffset_pos = d[1] + 1
+                let yOffset_neg = d[1] - 1
                 x = graph[id].x + x;
                 /////////-- if same line check--///
                 const ySet = new Set();
@@ -82,6 +82,10 @@ function generateGraph(node, graph, coordsReserve, nodeMap){
                     if(sameY && (pos && neg)){
                         y -= 1;
                     }
+                } else {
+                    //since 1 connection
+                    const conn_node = nodeMap[nd].nodes[0];
+                    y = graph[conn_node].node.nodes.length <= 2 ? graph[conn_node].y : y;
                 }
                 /////////////////////////////////
                 const curren = coordsReserve.loc[x+'_'+y];
@@ -90,6 +94,11 @@ function generateGraph(node, graph, coordsReserve, nodeMap){
                 if(!curren && !curren_pos && !curren_neg){
                     graph[nd].x = x ;
                     graph[nd].y = y ;
+                    if(!graph[nd].opt)
+                        graph[nd].opt = {id, fact: coords.length};
+                    else if(graph[nd].opt.fact < coords.length) {
+                        graph[nd].opt = {id, fact: coords.length};
+                    }
                     coordsReserve.maxX = x == coordsReserve.maxX ? x+1 : coordsReserve.maxX;
                     coordsReserve.loc[x+'_'+y] = nd;
                     break;
@@ -146,6 +155,34 @@ function createCyclicOrder(tenantEdgeList){
     return finalList;
 }
 
+function distanceFactor(x1,x2,y1,y2){
+    return Math.abs(x1-x2) + Math.abs(y1-y2);
+}
+function fineTuneGraph(graph){
+    //distance optimization
+    const graphList = Object.values(graph);
+    const optimizerList = {};
+    graphList.forEach(x => {
+        if(x.opt && x.opt.id !== x.id){
+            optimizerList[x.opt.id] ??= [];
+            optimizerList[x.opt.id].push(x);
+        }
+    })
+    Object.values(optimizerList).forEach(list => {
+        list.forEach(node => {
+            let distFactor = 0;
+            const x = node.x, y = node.y;
+            node.node.nodes.forEach(nd => {
+                const _x = graph[nd].x;
+                const _y = graph[nd].y;
+                distFactor += distanceFactor(x,_x,y,_y);
+            });
+
+
+        });
+    });
+}
+
 function generateParentPositions(edges){
     let tenantEdgeList = getTenantEdgeCounts(edges);
     let graph = {};
@@ -161,12 +198,12 @@ function generateParentPositions(edges){
     } else {
         const nodeMap = {};
         tenantEdgeList.forEach(x => nodeMap[x.id] = x);
-        coordsReserve = {maxX: 0, loc: {}}
+        coordsReserve = {maxX: 0, loc: {}, optType:0}
         tenantEdgeList.forEach((node,i) => {
             generateGraph(node, graph, coordsReserve, nodeMap)
         });
+        fineTuneGraph(graph);
     }
-    console.log(graph);
     return graph;
 }
 

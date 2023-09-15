@@ -308,6 +308,9 @@ let edges = [
     { from: 'n3', to: 'n4'},
     { from: 'n5', to: 'n4'},
     { from: 'n6', to: 'n4'},
+    { from: 'n3', to: 'n5'},
+    { from: 'n1', to: 'n5'},
+    { from: 'n1', to: 'n4'},
 ];
 
 
